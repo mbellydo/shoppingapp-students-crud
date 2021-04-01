@@ -19,6 +19,8 @@ class Product {
 class UI {
   //Product template
   static addProduct(product) {
+    const actualYear = new Date().getFullYear();
+    if (product.year <= actualYear) {
     const productList = document.getElementById("product-list");
     const element = document.createElement("div");
     element.innerHTML = `
@@ -32,6 +34,7 @@ class UI {
       </div>
       `;
     productList.appendChild(element);
+    }
   }
 
   static resetForm() {
@@ -73,6 +76,7 @@ class UI {
   }
 
   static postProductFromServer(productMarquet) {
+    console.log(productMarquet.title + " " + productMarquet.price + " " + productMarquet.year)
     fetch(urlPost + idTeam, {
       method: "POST", // So, we can specify HTTP Methods here. Uh, interesting.
       headers: { 'Content-Type': 'application/json' }, // Type of data to retrieve. 
@@ -96,34 +100,28 @@ class UI {
 
 //DOM Events
 document.getElementById("product-form").addEventListener("submit",  e => {
+  const id = "";
   const title = document.getElementById("product-name").value
-  price = document.getElementById("product-price").value
-  year = document.getElementById("product-year").value
+  const price = document.getElementById("product-price").value
+  const year = document.getElementById("product-year").value
 
 
 
 
   //Save product
-  const product = new Product(title, price, year);
-
-  actualYear = new Date().getFullYear();
-  if (product.year <= actualYear) {
-    UI.addProduct(product);
-    UI.postProductFromServer(product);
-    UI.resetForm();
-    UI.showMessage("Product added successfully", "success");
-  }
-
+  const product = new Product(id, title, price, year);
+  UI.addProduct(product);
+  UI.postProductFromServer(product);
+  UI.resetForm();
+  UI.showMessage("Product added successfully", "success");
+  console.log("ola");
   e.preventDefault();
 });
 
 UI.retreiveAllProductsFromServer((data) => {
   productMarquet = data
   console.log(productMarquet);
-  actualYear = new Date().getFullYear();
   productMarquet.forEach(productMarquet => {
-    if (productMarquet.year <= actualYear) {
-     UI.addProduct(productMarquet);
-    }
+    UI.addProduct(productMarquet);
   });
 });
